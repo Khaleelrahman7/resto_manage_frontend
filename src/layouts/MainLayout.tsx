@@ -21,7 +21,7 @@ import {
 import clsx from 'clsx';
 
 const MainLayout: React.FC = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const location = useLocation();
@@ -55,13 +55,25 @@ const MainLayout: React.FC = () => {
     setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+      setIsSidebarOpen(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+      setIsSidebarOpen(false);
+    }
+  }, [location.pathname]);
+
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
       <aside 
         className={clsx(
           "fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-white transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0",
-          !isSidebarOpen && "-translate-x-full lg:hidden"
+          !isSidebarOpen && "-translate-x-full"
         )}
       >
         <div className="h-full flex flex-col">
@@ -239,6 +251,12 @@ const MainLayout: React.FC = () => {
           </div>
         </div>
       </aside>
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
